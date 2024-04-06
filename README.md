@@ -1,3 +1,3 @@
-# Algo_solved
+# Algorithm_solved
 ### Baekjoon
 ### Programmers
