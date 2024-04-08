@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 // 구간 합 구하기 (5)
@@ -22,10 +23,19 @@ public class Main {
 			for (int j = 1; j <= N; j++) {
 				array[i][j] = Integer.parseInt(st.nextToken());
 				sum[i][j] = array[i][j];
-				
-				if (j > 1) {
-					sum[i][j] += sum[i][j-1];
-				}
+			}
+		}
+		
+		// 행열 첫줄 초기화
+		for (int i = 2; i <= N; i++) {
+			sum[1][i] += sum[1][i-1];
+			sum[i][1] += sum[i-1][1];
+		}
+		
+		// 다른 부분 누적합
+		for (int i = 2; i <= N; i++) {
+			for (int j = 2; j <= N; j++) {
+				sum[i][j] += sum[i-1][j] + sum[i][j-1] - sum[i-1][j-1];
 			}
 		}
 		
@@ -36,12 +46,7 @@ public class Main {
 			int x2 = Integer.parseInt(st.nextToken());
 			int y2 = Integer.parseInt(st.nextToken());
 			
-			int total = 0;
-			
-			for (int j = x1; j <= x2; j++) {
-				total += sum[j][y2];
-				total -= sum[j][y1 - 1];
-			}
+			int total = sum[x2][y2] - sum[x2][y1-1] - sum[x1-1][y2] + sum[x1-1][y1-1];
 			
 			sb.append(total + "\n");
 		}
