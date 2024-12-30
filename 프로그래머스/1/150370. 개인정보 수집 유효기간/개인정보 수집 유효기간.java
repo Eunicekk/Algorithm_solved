@@ -2,7 +2,7 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String today, String[] terms, String[] privacies) {
-        List<Integer> answer = new ArrayList<>();
+        List<Integer> list = new ArrayList<>();
         String[] todayArray = today.split("\\.");
         Map<String, Integer> map = new HashMap<>();
         int length = privacies.length;
@@ -39,10 +39,17 @@ class Solution {
             if (deadline[0] < todayYear || 
                 (deadline[0] == todayYear && deadline[1] < todayMonth) || 
                 (deadline[0] == todayYear && deadline[1] == todayMonth && deadline[2] <= todayDay)) {
-                answer.add(i + 1);
+                list.add(i + 1);
             }
         }
         
-        return answer.stream().mapToInt(Integer::intValue).toArray();
+        int[] answer = new int[list.size()];
+        Iterator<Integer> iterator = list.iterator();
+        int index = 0;
+        while (iterator.hasNext()) {
+            answer[index++] = iterator.next();
+        }
+
+        return answer;
     }
 }
