@@ -1,67 +1,46 @@
 import java.util.*;
 
 class Solution {
-    static HashMap<String, Integer> stringMap;
+    static List<String> answer = new ArrayList<>();
+    static Map<String, Integer> map;
     
     public String[] solution(String[] orders, int[] course) {
-        // 1. orders의 값을 char 배열로 바꾸어 각 글자마다 정렬 : 정렬하지 않으면 3번 케이스의 XW와 WX가 다른 조합으로 계산됨
-        // 2. 가능한 조합 전부 만들고 각 조합이 사용되는 값 HashMap에 삽입
-        // 3. 최댓값을 가지는 조합을 찾아 반환
-
-        // orders의 값 char 배열로 바꾸어 각 글자마다 정렬
         for (int i = 0; i < orders.length; i++) {
-            char[] ca = orders[i].toCharArray();
-            Arrays.sort(ca);
-            orders[i] = String.valueOf(ca);
+            char[] order = orders[i].toCharArray();
+            Arrays.sort(order);
+            orders[i] = new String(order);
         }
-
-        stringMap = new HashMap<>();
-        ArrayList<String> answerList = new ArrayList<>();
-
-        // 가능한 조합 전부 만들기
+        
         for (int c : course) {
-            for (int i = 0; i < orders.length; i++) {
-                combination(orders[i], "", c);
+            map = new HashMap<>();
+            
+            for (String order : orders) {
+                if (order.length() >= c) combination(order, "", 0, c);
             }
-            // 만든 조합이 하나라도 있다면
-            if (!stringMap.isEmpty()) {
-                // 최댓값을 구하기 위한 ArrayList
-                ArrayList<Integer> maxList = new ArrayList<>(stringMap.values());
-                int max = Collections.max(maxList);
-                // 코스 요리의 구성은 최소 2가지 이상이르모
-                if (max > 1) {
-                    for(String key : stringMap.keySet()) {
-                        if(stringMap.get(key) == max) {
-                            answerList.add(key);
-                        }
-                    }
-                }
+            
+            int max = 2;
+            for (int count : map.values()) {
+                max = Math.max(max, count);
             }
-            // 다음 크기의 조합을 만들기 위해 map clear
-            stringMap.clear();
+            
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                if (entry.getValue() == max) answer.add(entry.getKey());
+            }
         }
-
-        // answerList에 있는 값 answer 배열에 삽입
-        String[] answer = new String[answerList.size()];
-        for (int i = 0; i < answerList.size(); i++) {
-            answer[i] = answerList.get(i);
-        }
-
-        // 오름차순 정렬
-        Arrays.sort(answer);
-        return answer;
+        
+        Collections.sort(answer);
+        return answer.toArray(new String[0]);
     }
     
-    // 조합을 구하는 메서드
-    static void combination(String order, String com, int courseNum) {
-        // 재귀 탈출 조건
-        if (com.length() == courseNum) {
-            stringMap.put(com, stringMap.getOrDefault(com, 0) + 1);
+    void combination(String order, String current, int index, int length) {
+        if (current.length() == length) {
+            map.put(current, map.getOrDefault(current, 0) + 1);
             return;
         }
-        // 실행 조건
-        for (int i = 0; i < order.length(); i++) {
-            combination(order.substring(i + 1), com + order.charAt(i), courseNum);
-        }
+        
+        if (index >= order.length()) return;
+        
+        combination(order, current + order.charAt(index), index + 1, length);
+        combination(order, current, index + 1, length);
     }
 }
