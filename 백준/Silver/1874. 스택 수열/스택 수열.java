@@ -3,38 +3,42 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Stack;
 
-// 스택 수열
 public class Main {
-
+	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringBuilder sb = new StringBuilder();
-		Stack<Integer> stack = new Stack<Integer>();
-		
 		int N = Integer.parseInt(br.readLine());
+		int[] array = new int[N];
+		Stack<Integer> stack = new Stack<>();
+		StringBuilder sb = new StringBuilder();
 		
-		int start = 0;
-		
-		while (N-- > 0) {
-			int value = Integer.parseInt(br.readLine());
-			
-			if (value > start) {
-				for (int i = start + 1; i <= value; i++) {
-					stack.push(i);
-					sb.append("+" + "\n");
-				}
-				
-				start = value;
-			} else if (stack.peek() != value) {
-				System.out.println("NO");
-				return;
-			}
-			
-			stack.pop();
-			sb.append("-" + "\n");
+		for (int i = 0; i < N; i++) {
+			array[i] = Integer.parseInt(br.readLine());
 		}
 		
-		System.out.print(sb);
+		int current = 1;
+		boolean isPossible = true;
+		
+		for (int i = 0; i < N; i++) {
+			while (current <= array[i]) {
+				sb.append("+\n");
+				stack.push(current++);
+			}
+			
+			if (!stack.isEmpty() && stack.peek() == array[i]) {
+				sb.append("-\n");
+				stack.pop();
+			} else {
+				isPossible = false;
+				break;
+			}
+		}
+		
+		if (isPossible) {
+			System.out.println(sb.toString());
+		} else {
+			System.out.println("NO");
+		}
 	}
 	
 }
