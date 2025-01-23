@@ -12,6 +12,7 @@ public class Main_나무공격 {
 		int M = Integer.parseInt(st.nextToken());
 		int[][] board = new int[N][M];
 		int count = 0;
+		int kill = 0;
 		
 		for (int r = 0; r < N; r++) {
 			st = new StringTokenizer(br.readLine());
@@ -20,8 +21,6 @@ public class Main_나무공격 {
 				if (board[r][c] == 1) count++;
 			}
 		}
-		
-		int kill = 0;
 		
 		for (int i = 0; i < 2; i++) {
 			st = new StringTokenizer(br.readLine());
