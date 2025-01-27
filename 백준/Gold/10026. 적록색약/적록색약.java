@@ -1,19 +1,16 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
+import java.io.*;
 
-// 적록색약
 public class Main {
 	
 	static int N;
-	static int[][] section;
-	static boolean[][] visit;
+	static char[][] section;
+	static boolean[][] visit1;
+	static boolean[][] visit2;
 	static int count1;
 	static int count2;
 	
-	static int[] dr = {-1, 1, 0, 0}; // 상 하 좌 우
+	static int[] dr = {-1, 1, 0, 0};
 	static int[] dc = {0, 0, -1, 1};
 	
 	static class Point {
@@ -25,34 +22,31 @@ public class Main {
 			this.c = c;
 		}
 	}
-
+	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
+		section = new char[N][N];
+		visit1 = new boolean[N][N];
+		visit2 = new boolean[N][N];
 		
-		section = new int[N][N];
-		visit = new boolean[N][N];
-		
-		for (int i = 0; i < N; i++) {
+		for (int r = 0; r < N; r++) {
 			String temp = br.readLine();
-			for (int j = 0; j < N; j++) {
-				section[i][j] = temp.charAt(j);
+			for (int c = 0; c < N; c++) {
+				section[r][c] = temp.charAt(c);
 			}
 		}
 		
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				if (!visit[i][j]) {
-					bfs1(i, j);
+		for (int r = 0; r < N; r++) {
+			for (int c = 0; c < N; c++) {
+				if (!visit1[r][c]) {
+					bfs1(r, c);
+					count1++;
 				}
-			}
-		}
-		
-		visit = new boolean[N][N];
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				if (!visit[i][j]) {
-					bfs2(i, j);
+				
+				if (!visit2[r][c]) {
+					bfs2(r, c);
+					count2++;
 				}
 			}
 		}
@@ -60,12 +54,12 @@ public class Main {
 		System.out.println(count1 + " " + count2);
 	}
 	
-	// 적록색약 아닌 사람 bfs
-	static void bfs1 (int r, int c) {
+	// 적록색약 아닌 사람
+	static void bfs1(int r, int c) {
 		Queue<Point> queue = new LinkedList<>();
 		queue.offer(new Point(r, c));
-		visit[r][c] = true;
-		count1++;
+		char ch = section[r][c];
+		visit1[r][c] = true;
 		
 		while (!queue.isEmpty()) {
 			Point point = queue.poll();
@@ -74,22 +68,22 @@ public class Main {
 				int nr = point.r + dr[d];
 				int nc = point.c + dc[d];
 				
-				if (nr >= 0 && nc >= 0 && nr < N && nc < N && !visit[nr][nc]) {
-					if (section[r][c] == section[nr][nc]) {
+				if (nr >= 0 && nc >= 0 && nr < N && nc < N && !visit1[nr][nc]) {
+					if (section[nr][nc] == ch) {
 						queue.offer(new Point(nr, nc));
-						visit[nr][nc] = true;
+						visit1[nr][nc] = true;
 					}
 				}
 			}
 		}
 	}
 	
-	// 적록색약 맞는 사람 bfs
-	static void bfs2 (int r, int c) {
+	// 적록색약인 사람
+	static void bfs2(int r, int c) {
 		Queue<Point> queue = new LinkedList<>();
 		queue.offer(new Point(r, c));
-		visit[r][c] = true;
-		count2++;
+		char ch = section[r][c];
+		visit2[r][c] = true;
 		
 		while (!queue.isEmpty()) {
 			Point point = queue.poll();
@@ -98,16 +92,16 @@ public class Main {
 				int nr = point.r + dr[d];
 				int nc = point.c + dc[d];
 				
-				if (nr >= 0 && nc >= 0 && nr < N && nc < N && !visit[nr][nc]) {
-					if (section[r][c] == 'R' || section[r][c] == 'G') {
-						if (section[nr][nc] != 'B') {
+				if (nr >= 0 && nc >= 0 && nr < N && nc < N && !visit2[nr][nc]) {
+					if (ch == 'R' || ch == 'G') {
+						if (section[nr][nc] == 'R' || section[nr][nc] == 'G') {
 							queue.offer(new Point(nr, nc));
-							visit[nr][nc] = true;
+							visit2[nr][nc] = true;
 						}
 					} else {
-						if (section[r][c] == section[nr][nc]) {
+						if (section[nr][nc] == 'B') {
 							queue.offer(new Point(nr, nc));
-							visit[nr][nc] = true;
+							visit2[nr][nc] = true;
 						}
 					}
 				}
