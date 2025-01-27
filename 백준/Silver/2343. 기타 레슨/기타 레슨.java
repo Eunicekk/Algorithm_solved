@@ -1,52 +1,57 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Main {
 	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		
 		int N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
 		int[] lesson = new int[N];
 		
-		int left = 0;
-		int right = 0;
-		st = new StringTokenizer(br.readLine());
+		int max = 0;
+		int sum = 0;
 		
+		st = new StringTokenizer(br.readLine());
 		for (int i = 0; i < N; i++) {
 			lesson[i] = Integer.parseInt(st.nextToken());
-			right += lesson[i];
-			left = Math.max(left, lesson[i]);
-		}
-		
-		while (left <= right) {
-			int mid = (left + right) / 2;
-			int count = getCount(N, lesson, mid);
-			
-			if (count > M) left = mid + 1;
-			else right = mid - 1;
-		}
-		
-		System.out.println(left);
-	}
-	
-	static int getCount(int N, int[] lesson, int mid) {
-		int sum = 0;
-		int count = 0;
-		for (int i = 0; i < N; i++) {
-			if (sum + lesson[i] > mid) {
-				sum = 0;
-				count++;
-			}
+			max = Math.max(max, lesson[i]);
 			sum += lesson[i];
 		}
 		
-		if (sum != 0) count++;
-		return count;
+		int low = max;
+		int high = sum;
+		int result = high;
+		
+		while (low <= high) {
+			int mid = (low + high) / 2;
+			
+			if (divide(lesson, M, mid)) {
+				result = mid;
+				high = mid - 1;
+			} else {
+				low = mid + 1;
+			}
+		}
+		
+		System.out.println(result);
+	}
+	
+	static boolean divide(int[] lesson, int M, int size) {
+		int count = 1;
+		int sum = 0;
+		
+		for (int les : lesson) {
+			if (sum + les > size) {
+				count++;
+				sum = les;
+			} else {
+				sum += les;
+			}
+		}
+		
+		return count <= M;
 	}
 	
 }
