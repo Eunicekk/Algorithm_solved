@@ -1,97 +1,90 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
-// 토마토
 public class Main {
 	
-	static int N; // 상자 가로
-	static int M; // 상자 세로
+	static int N, M;
 	static int[][] tomato;
 	static boolean[][] visit;
-	static List<Integer>[] adj;
-	static int count;
 	
-	static int[] dr = {-1, 1, 0, 0}; // 상 하 좌 우
+	static int[] dr = {-1, 1, 0, 0};
 	static int[] dc = {0, 0, -1, 1};
 	
 	static class Point {
 		int r;
 		int c;
+		int d;
 		
-		public Point(int r, int c) {
+		public Point(int r, int c, int d) {
 			this.r = r;
 			this.c = c;
+			this.d = d;
 		}
 	}
 	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		
 		M = Integer.parseInt(st.nextToken());
 		N = Integer.parseInt(st.nextToken());
 		tomato = new int[N][M];
 		visit = new boolean[N][M];
-		adj = new ArrayList[N];
-		
-		for (int i = 0; i < N; i++) {
-			adj[i] = new ArrayList<>();
-		}
-		
-		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine());
-			for (int j = 0; j < M; j++) {
-				tomato[i][j] = Integer.parseInt(st.nextToken());
-			}
-		}
 		
 		Queue<Point> queue = new LinkedList<>();
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < M; j++) {
-				if (tomato[i][j] == 1) {
-					queue.offer(new Point(i, j));
-					visit[i][j] = true;
+		int one = 0;
+		
+		for (int r = 0; r < N; r++) {
+			st = new StringTokenizer(br.readLine());
+			for (int c = 0; c < M; c++) {
+				tomato[r][c] = Integer.parseInt(st.nextToken());
+				if (tomato[r][c] == 1) {
+					one++;
+					queue.offer(new Point(r, c, 0));
+					visit[r][c] = true;
 				}
 			}
 		}
 		
-		bfs(queue);
+		if (one == N * M) {
+			System.out.println(0);
+			return;
+		}
 		
-		out : for (int i = 0; i < N; i++) {
-			for (int j = 0; j < M; j++) {
-				if (tomato[i][j] == 0) {
-					count = -1;
-					break out;
-				} else {
-					count = Math.max(count, tomato[i][j] - 1);				
+		int day = bfs(queue);
+		
+		for (int r = 0; r < N; r++) {
+			for (int c = 0; c < M; c++) {
+				if (tomato[r][c] == 0) {
+					System.out.println(-1);
+					return;
 				}
 			}
 		}
 		
-		System.out.println(count);
+		System.out.println(day);
 	}
 	
-	static void bfs(Queue<Point> queue) {
+	static int bfs(Queue<Point> queue) {
+		int day = 0;
+		
 		while (!queue.isEmpty()) {
 			Point point = queue.poll();
 			
 			for (int i = 0; i < 4; i++) {
 				int nr = point.r + dr[i];
 				int nc = point.c + dc[i];
+				int nd = point.d + 1;
 				
-				if (nr >= 0 && nc >= 0 && nr < N && nc < M && tomato[nr][nc] == 0 && visit[nr][nc] == false) {
-					queue.offer(new Point(nr, nc));
-					tomato[nr][nc] = tomato[point.r][point.c] + 1;
+				if (nr >= 0 && nc >= 0 && nr < N && nc < M && !visit[nr][nc] && tomato[nr][nc] == 0) {
+					queue.offer(new Point(nr, nc, nd));
 					visit[nr][nc] = true;
+					tomato[nr][nc] = 1;
+					day = Math.max(day, nd);
 				}
 			}
 		}
+		
+		return day;
 	}
 	
 }
