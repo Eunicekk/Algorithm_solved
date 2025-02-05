@@ -1,55 +1,46 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Main {
-	
-	static int[] house;
-	
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		
 		int N = Integer.parseInt(st.nextToken());
-		int M = Integer.parseInt(st.nextToken());
-		house = new int[N];
+		int C = Integer.parseInt(st.nextToken());
+		int[] road = new int[N];
 		
 		for (int i = 0; i < N; i++) {
-			house[i] = Integer.parseInt(br.readLine());
+			road[i] = Integer.parseInt(br.readLine());
 		}
 		
-		Arrays.sort(house);
+		Arrays.sort(road);
 		
-		int lo = 1;
-		int hi = house[N-1] - house[0] + 1;
+		int start = 1;
+		int end = road[N-1] - road[0];
+		int result = 0;
 		
-		// 이분탐색 upper bound
-		while (lo < hi) {
-			int mid = (hi + lo) / 2;
+		while (start <= end) {
+			int mid = (start + end) / 2;
+			int count = 1;
+			int last = road[0];
 			
-			if (install(mid) < M) hi = mid;
-			else lo = mid + 1;
-		}
-		
-		System.out.println(lo - 1);
-	}
-	
-	// 설치 가능한 공유기 찾기
-	static int install(int distance) {
-		int count = 1;
-		int last = house[0];
-		
-		for (int i = 1; i < house.length; i++) {
-			int locate = house[i];
+			for (int i = 0; i < N; i++) {
+				if (road[i] - last >= mid) {
+					count++;
+					last = road[i];
+				}
+			}
 			
-			if (locate - last >= distance) {
-				count++;
-				last = locate;
+			if (count >= C) {
+				result = mid;
+				start = mid + 1;
+			} else {
+				end = mid - 1;
 			}
 		}
 		
-		return count;
+		System.out.println(result);
 	}
+	
 }
