@@ -1,87 +1,77 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
-
-// 치킨 배달
-class Point {
-	int x;
-	int y;
-	
-	Point(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
-}
+import java.util.*;
+import java.io.*;
 
 public class Main {
-	
+
 	static int N, M;
-	static int[][] map;
-	static ArrayList<Point> home;
-	static ArrayList<Point> chicken;
-	static boolean[] open;
-	static int answer;
+	static int[][] city;
+	static ArrayList<Point> homes;
+	static ArrayList<Point> chickens;
+	static ArrayList<Point> select;
+	static int distance;
+	
+	static int[] dr = {-1, 1, 0, 0};
+	static int[] dc = {0, 0, -1, 1};
+	
+	static class Point {
+		int r;
+		int c;
+		
+		public Point(int r, int c) {
+			this.r = r;
+			this.c = c;
+		}
+	}
 	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
-		
-		map = new int[N][N];
-		home = new ArrayList<Point>(); // 1
-		chicken = new ArrayList<Point>(); // 2
+		city = new int[N][N];
+		homes = new ArrayList<>();
+		chickens = new ArrayList<>();
+		select = new ArrayList<>();
 		
 		for (int r = 0; r < N; r++) {
 			st = new StringTokenizer(br.readLine());
-			
 			for (int c = 0; c < N; c++) {
-				map[r][c] = Integer.parseInt(st.nextToken());
+				city[r][c] = Integer.parseInt(st.nextToken());
 				
-				if (map[r][c] == 1) {
-					home.add(new Point(r, c));
-				} else if (map[r][c] == 2) {
-					chicken.add(new Point(r, c));
-				}
+				if (city[r][c] == 1) homes.add(new Point(r, c));
+				else if (city[r][c] == 2) chickens.add(new Point(r, c));
 			}
 		}
 		
-		answer = Integer.MAX_VALUE;
-		open = new boolean[chicken.size()];
+		distance = Integer.MAX_VALUE;
+		dfs(0);
 		
-		dfs(0, 0);
-		System.out.println(answer);
+		System.out.println(distance);
 	}
 	
-	static void dfs(int start, int count) {
-		if (count == M) {
+	static void dfs(int start) {
+		if (select.size() == M) {
 			int sum = 0;
 			
-			for (int i = 0; i < home.size(); i++) {
-				int temp = Integer.MAX_VALUE;
+			for (Point home : homes) {
+				int min = Integer.MAX_VALUE;
 				
-				for (int j = 0; j < chicken.size(); j++) {
-					if (open[j]) {
-						int distance = Math.abs(home.get(i).x - chicken.get(j).x)
-								+ Math.abs(home.get(i).y - chicken.get(j).y);
-						temp = Math.min(temp, distance);
-					}
+				for (Point chicken : select) {
+					min = Math.min(min, Math.abs(home.r - chicken.r) + Math.abs(home.c - chicken.c));
 				}
 				
-				sum += temp;
+				sum += min;
 			}
 			
-			answer = Math.min(answer, sum);
+			distance = Math.min(distance, sum);
 			return;
- 		}
+		}
 		
-		for (int i = start; i < chicken.size(); i++) {
-			open[i] = true;
-			dfs(i + 1, count + 1);
-			open[i] = false;
+		for (int i = start; i < chickens.size(); i++) {
+			select.add(chickens.get(i));
+			dfs(i + 1);
+			select.remove(select.size() - 1);
 		}
 	}
+	
 }
