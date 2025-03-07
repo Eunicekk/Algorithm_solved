@@ -1,63 +1,40 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
-// 스위치 켜고 끄기
 public class Main {
 	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		StringBuilder sb = new StringBuilder();
+		int N = Integer.parseInt(br.readLine());
+		int[] button = new int[N+1];
 		
-		int N = Integer.parseInt(br.readLine()); // 스위치 개수
-		int[] button = new int[N + 1];
+		StringTokenizer st = new StringTokenizer(br.readLine());
 		
-		StringTokenizer s = new StringTokenizer(br.readLine());
 		for (int i = 1; i <= N; i++) {
-			button[i] = Integer.parseInt(s.nextToken());
+			button[i] = Integer.parseInt(st.nextToken());
 		}
 		
-		int P = Integer.parseInt(br.readLine()); // 사람 수
+		int M = Integer.parseInt(br.readLine());
 		
-		for (int p = 0; p < P; p++) {
-			StringTokenizer st = new StringTokenizer(br.readLine());
-			int num = Integer.parseInt(st.nextToken());
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+			int gender = Integer.parseInt(st.nextToken());
+			int number = Integer.parseInt(st.nextToken());
 			
-			if (num == 1) {
-				int index = Integer.parseInt(st.nextToken());
-				
-				for (int i = 1; i <= N; i++) {
-					if (i % index == 0) {
-						if (button[i] == 1) {
-							button[i] = 0;
-						} else {
-							button[i] = 1;
-						}
+			if (gender == 1) {
+				for (int j = 1; j <= N; j++) {
+					if (j % number == 0) {
+						button[j] = button[j] == 0 ? 1 : 0;
 					}
 				}
 			} else {
-				int index = Integer.parseInt(st.nextToken());
+				button[number] = button[number] == 0 ? 1 : 0;
 				
-				if (button[index] == 1) {
-					button[index] = 0;
-				} else {
-					button[index] = 1;
-				}
-				
-				for (int i = 1; i <= N; i++) {
-					if (index - i > 0 && index + i <= N) {
-						if (button[index - i] == 1 && button[index + i] == 1) {
-							button[index - i] = 0;
-							button[index + i] = 0;
-						} else if (button[index - i] == 0 && button[index + i] == 0) {
-							button[index - i] = 1;
-							button[index + i] = 1;
-						} else {
-							break;
-						}
+				for (int j = 1; number - j >= 1 && number + j <= N; j++) {
+					if (button[number - j] == button[number + j]) {
+						button[number - j] = button[number - j] == 0 ? 1 : 0;
+						button[number + j] = button[number + j] == 0 ? 1 : 0;
 					} else {
 						break;
 					}
@@ -66,14 +43,11 @@ public class Main {
 		}
 		
 		for (int i = 1; i <= N; i++) {
-			if (i % 20 == 0) {
-				bw.write(button[i] + "\n");
-			} else {
-				bw.write(button[i] + " ");
-			}
+			sb.append(button[i] + " ");
+			if (i % 20 == 0) sb.append("\n");
 		}
 		
-		bw.close();
+		System.out.println(sb);
 	}
 	
 }
