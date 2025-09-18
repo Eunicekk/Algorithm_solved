@@ -1,5 +1,5 @@
 const fs = require("fs");
-const input = fs.readFileSync("input.txt").toString().split(" ");
+const input = fs.readFileSync("/dev/stdin").toString().split(" ");
 
 const n = Number(input[0]);
 let sum = 0;
