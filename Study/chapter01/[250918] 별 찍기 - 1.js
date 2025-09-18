@@ -1,5 +1,6 @@
 const fs = require("fs");
 const input = fs.readFileSync("/dev/stdin").toString().split(" ");
+
 const n = Number(input[0]);
 let stars = "";
 
