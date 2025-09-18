@@ -1,5 +1,5 @@
 const fs = require("fs");
-const input = fs.readFileSync("input.txt").toString().split(" ");
+const input = fs.readFileSync("/dev/stdin").toString().split(" ");
 let text = "";
 
 for (let i = 1; i <= 9; i++) {
