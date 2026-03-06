@@ -1,0 +1,10 @@
+-- 아이템의 희귀도가 'RARE'인 아이템들의 모든 다음 업그레이드 아이템의 아이템 ID, 아이템 명, 아이템의 희귀도를 출력
+-- 아이템 ID를 기준으로 내림차순 정렬
+SELECT I1.ITEM_ID, I1.ITEM_NAME, I1.RARITY 
+FROM ITEM_TREE IT
+INNER JOIN ITEM_INFO I1
+    ON IT.ITEM_ID = I1.ITEM_ID
+INNER JOIN ITEM_INFO I2
+    ON IT.PARENT_ITEM_ID = I2.ITEM_ID
+WHERE I2.RARITY = 'RARE'
+ORDER BY I1.ITEM_ID DESC;
