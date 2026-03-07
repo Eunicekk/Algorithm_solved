@@ -1,0 +1,10 @@
+-- ROOT 아이템을 찾아 아이템 ID, 아이템 명을 출력
+-- 아이템 ID를 기준으로 오름차순 정렬
+SELECT ITEM_ID, ITEM_NAME
+FROM ITEM_INFO
+WHERE ITEM_ID IN (
+        SELECT ITEM_ID
+        FROM ITEM_TREE
+        WHERE PARENT_ITEM_ID IS NULL
+    )
+ORDER BY ITEM_ID ASC;
