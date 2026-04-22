@@ -1,0 +1,20 @@
+-- 2022년도 평가 점수가 가장 높은 사원들의 점수, 사번, 성명, 직책, 이메일을 조회
+-- 2022년도의 평가 점수는 상,하반기 점수의 합을 의미하고, 컬럼의 이름은 SCORE
+SELECT S.SCORE, HE.EMP_NO, HE.EMP_NAME, HE.POSITION, HE.EMAIL
+FROM HR_EMPLOYEES HE
+LEFT JOIN (
+    SELECT EMP_NO, SUM(SCORE) AS SCORE
+    FROM HR_GRADE
+    WHERE YEAR = 2022
+    GROUP BY EMP_NO
+) S
+ON HE.EMP_NO = S.EMP_NO
+WHERE S.SCORE = (
+    SELECT MAX(SUM_SCORE)
+    FROM (
+        SELECT SUM(SCORE) AS SUM_SCORE
+        FROM HR_GRADE
+        WHERE YEAR = 2022
+        GROUP BY EMP_NO
+    ) T
+);
